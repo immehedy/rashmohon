@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, ShoppingBasket } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
@@ -24,6 +25,12 @@ export function Header({
   }, []);
 
   const cartCount = hydrated ? count : 0;
+
+  const pathname = usePathname();
+  const nextLocale = locale === "en" ? "bn" : "en";
+  const segments = pathname.split("/");
+  segments[1] = nextLocale;
+  const languageHref = segments.join("/");
 
   return (
     <>
@@ -61,7 +68,7 @@ export function Header({
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
             <Link
-              href={`/${locale === "en" ? "bn" : "en"}`}
+              href={languageHref}
               className="rounded-full border border-neutral-200 px-3 py-2 text-xs">
               {dict.language}
             </Link>

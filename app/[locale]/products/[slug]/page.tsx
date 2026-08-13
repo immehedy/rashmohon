@@ -4,6 +4,7 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/contentful";
 import { ProductDetailsClient } from "@/components/product-details-client";
 import { RelatedProducts } from "@/components/related-products";
 import type { Locale } from "@/lib/types";
+import { hasLocaleData } from "@/lib/types";
 
 export default async function ProductPage({
   params,
@@ -15,8 +16,14 @@ export default async function ProductPage({
 
   if (!product) notFound();
 
+  if (!hasLocaleData(product, locale)) {
+    throw new Error(`No ${locale} data available for product "${slug}"`);
+  }
+
   const dict = translations[locale];
-  const related = await getRelatedProducts(product);
+  const related = (await getRelatedProducts(product)).filter((p) =>
+    hasLocaleData(p, locale)
+  );
 
   return (
     <main>

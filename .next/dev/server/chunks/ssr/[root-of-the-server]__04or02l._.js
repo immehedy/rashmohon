@@ -113,8 +113,11 @@ async function ProductPage({ params }) {
     const { locale, slug } = await params;
     const product = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$contentful$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getProductBySlug"])(slug);
     if (!product) (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["notFound"])();
+    if (!hasLocaleData(product, locale)) {
+        throw new Error(`No ${locale} data available for product "${slug}"`);
+    }
     const dict = __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$i18n$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["translations"][locale];
-    const related = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$contentful$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getRelatedProducts"])(product);
+    const related = (await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$contentful$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getRelatedProducts"])(product)).filter((p)=>hasLocaleData(p, locale));
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -127,17 +130,17 @@ async function ProductPage({ params }) {
                         dict: dict
                     }, void 0, false, {
                         fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                        lineNumber: 25,
+                        lineNumber: 31,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                    lineNumber: 24,
+                    lineNumber: 30,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                lineNumber: 23,
+                lineNumber: 29,
                 columnNumber: 7
             }, this),
             related.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -150,7 +153,7 @@ async function ProductPage({ params }) {
                             children: dict.related
                         }, void 0, false, {
                             fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                            lineNumber: 36,
+                            lineNumber: 42,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$related$2d$products$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["RelatedProducts"], {
@@ -159,24 +162,24 @@ async function ProductPage({ params }) {
                             dict: dict
                         }, void 0, false, {
                             fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                            lineNumber: 40,
+                            lineNumber: 46,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                    lineNumber: 35,
+                    lineNumber: 41,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-                lineNumber: 34,
+                lineNumber: 40,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/[locale]/products/[slug]/page.tsx",
-        lineNumber: 22,
+        lineNumber: 28,
         columnNumber: 5
     }, this);
 }
@@ -320,14 +323,14 @@ async function getProducts() {
                 id: item.sys.id,
                 slug: item.fields.slug,
                 name: item.fields.name,
-                nameBn: item.fields.nameBn ?? item.fields.name,
+                nameBn: item.fields.nameBn ?? "",
                 description: item.fields.description ?? "",
-                descriptionBn: item.fields.descriptionBn ?? item.fields.description ?? "",
+                descriptionBn: item.fields.descriptionBn ?? "",
                 price: Number(item.fields.price ?? 0),
                 image: item.fields.image?.fields?.file?.url ? `https:${item.fields.image.fields.file.url}` : __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["products"][0].image,
                 categoryId: item.fields.category?.sys?.id ?? "",
                 categoryName: item.fields.category?.fields?.name ?? "",
-                categoryNameBn: item.fields.category?.fields?.nameBn ?? item.fields.category?.fields?.name ?? ""
+                categoryNameBn: item.fields.category?.fields?.nameBn ?? ""
             }));
     } catch  {
         return __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["products"];
@@ -342,7 +345,7 @@ async function getCategories() {
         return result.items.map((item)=>({
                 id: item.sys.id,
                 name: item.fields.name,
-                nameBn: item.fields.nameBn ?? item.fields.name,
+                nameBn: item.fields.nameBn ?? "",
                 slug: item.fields.slug,
                 image: item.fields.image?.fields?.file?.url ? `https:${item.fields.image.fields.file.url}` : __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["categories"][0].image
             }));

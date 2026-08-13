@@ -3,6 +3,7 @@ import { getCategories, getProducts } from "@/lib/contentful";
 import { Hero } from "@/components/hero";
 import { CategoryCarousel } from "@/components/category-carousel";
 import { ProductGrid } from "@/components/product-grid";
+import { hasLocaleData } from "@/lib/types";
 import type { Locale } from "@/lib/types";
 
 export default async function Home({
@@ -13,10 +14,18 @@ export default async function Home({
   const { locale } = await params;
   const dict = translations[locale];
 
-  const [categories, products] = await Promise.all([
+  const [allCategories, allProducts] = await Promise.all([
     getCategories(),
     getProducts(),
   ]);
+
+  const categories = allCategories.filter((category) =>
+    locale === "bn" ? Boolean(category.nameBn) : Boolean(category.name)
+  );
+
+  const products = allProducts.filter((product) =>
+    hasLocaleData(product, locale)
+  );
 
   return (
     <>

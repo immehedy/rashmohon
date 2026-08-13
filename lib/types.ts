@@ -25,3 +25,10 @@ export type Category = {
 export type CartItem = Product & {
   quantity: number;
 };
+
+export function hasLocaleData(product: Product, locale: Locale): boolean {
+  if (locale === "bn") {
+    return Boolean(product.nameBn);
+  }
+  return Boolean(product.name);
+}

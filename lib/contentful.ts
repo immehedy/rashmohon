@@ -23,16 +23,16 @@ export async function getProducts(): Promise<Product[]> {
       id: item.sys.id,
       slug: item.fields.slug,
       name: item.fields.name,
-      nameBn: item.fields.nameBn ?? item.fields.name,
+      nameBn: item.fields.nameBn ?? "",
       description: item.fields.description ?? "",
-      descriptionBn: item.fields.descriptionBn ?? item.fields.description ?? "",
+      descriptionBn: item.fields.descriptionBn ?? "",
       price: Number(item.fields.price ?? 0),
       image: item.fields.image?.fields?.file?.url
         ? `https:${item.fields.image.fields.file.url}`
         : dummyProducts[0].image,
       categoryId: item.fields.category?.sys?.id ?? "",
       categoryName: item.fields.category?.fields?.name ?? "",
-      categoryNameBn: item.fields.category?.fields?.nameBn ?? item.fields.category?.fields?.name ?? "",
+      categoryNameBn: item.fields.category?.fields?.nameBn ?? "",
     }));
   } catch {
     return dummyProducts;
@@ -48,7 +48,7 @@ export async function getCategories(): Promise<Category[]> {
     return result.items.map((item: any) => ({
       id: item.sys.id,
       name: item.fields.name,
-      nameBn: item.fields.nameBn ?? item.fields.name,
+      nameBn: item.fields.nameBn ?? "",
       slug: item.fields.slug,
       image: item.fields.image?.fields?.file?.url
         ? `https:${item.fields.image.fields.file.url}`
