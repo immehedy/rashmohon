@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Search, ShoppingBasket } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -12,7 +13,17 @@ export function Header({
   locale: "en" | "bn";
   dict: Dictionary;
 }) {
-  const count = useCartStore((state) => state.totalItems());
+  const items = useCartStore((state) => state.items);
+
+  const count = items.reduce((total, item) => total + item.quantity, 0);
+
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  const cartCount = hydrated ? count : 0;
 
   return (
     <>
@@ -28,7 +39,7 @@ export function Header({
           <Link
             href={`/${locale}`}
             className="shrink-0 text-2xl font-black tracking-[-0.06em]">
-            RASHMOHON
+            MUSKAN
           </Link>
 
           <form
@@ -39,7 +50,9 @@ export function Header({
               placeholder={dict.search}
               className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm outline-none"
             />
+
             <button
+              type="submit"
               aria-label={dict.search}
               className="grid w-12 place-items-center bg-black text-white">
               <Search size={17} />
@@ -58,9 +71,10 @@ export function Header({
               className="relative grid size-11 place-items-center rounded-full border border-neutral-200"
               aria-label={dict.cart}>
               <ShoppingBasket size={19} />
-              {count > 0 && (
+
+              {cartCount > 0 && (
                 <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-black px-1 text-[10px] text-white">
-                  {count}
+                  {cartCount}
                 </span>
               )}
             </Link>
