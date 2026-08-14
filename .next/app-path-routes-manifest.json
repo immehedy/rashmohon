@@ -1,9 +1,0 @@
-{
-  "/[locale]/basket/page": "/[locale]/basket",
-  "/[locale]/page": "/[locale]",
-  "/[locale]/products/[slug]/page": "/[locale]/products/[slug]",
-  "/_global-error/page": "/_global-error",
-  "/_not-found/page": "/_not-found",
-  "/api/orders/route": "/api/orders",
-  "/page": "/"
-}
