@@ -31,7 +31,7 @@ export function Hero({
       {images.map((src, i) => (
         <div
           key={src + i}
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 object-contain"
           style={{
             backgroundImage: `linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.08)),url(${src})`,
             opacity: i === index ? 1 : 0,

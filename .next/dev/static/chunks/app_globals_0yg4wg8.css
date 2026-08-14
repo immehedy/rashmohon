@@ -50,6 +50,7 @@
     --color-red-500: #fb2c36;
     --color-green-50: #f0fdf4;
     --color-green-200: #b9f8cf;
+    --color-zinc-900: #18181b;
     --color-neutral-50: #fafafa;
     --color-neutral-100: #f5f5f5;
     --color-neutral-200: #e5e5e5;
@@ -88,6 +89,7 @@
     --text-7xl: 4.5rem;
     --text-7xl--line-height: 1;
     --font-weight-normal: 400;
+    --font-weight-medium: 500;
     --font-weight-bold: 700;
     --font-weight-extrabold: 800;
     --font-weight-black: 900;
@@ -108,6 +110,7 @@
     --color-secondary: var(--secondary-color, #6f6f6f);
     --color-button: var(--button-color, #151515);
     --color-button-text: var(--button-text-color, #fff);
+    --color-foreground: var(--foreground, var(--color-text));
   }
 
   @supports (color: lab(0% 0 0)) {
@@ -116,6 +119,7 @@
       --color-red-500: lab(55.4814% 75.0732 48.8528);
       --color-green-50: lab(98.1563% -5.60117 2.75915);
       --color-green-200: lab(92.4222% -26.4702 12.9427);
+      --color-zinc-900: lab(8.30603% .618205 -2.16572);
       --color-neutral-50: lab(98.26% 0 0);
       --color-neutral-100: lab(96.52% -.0000298023 .0000119209);
       --color-neutral-200: lab(90.952% 0 -.0000119209);
@@ -384,6 +388,16 @@
     padding-block: calc(var(--spacing) * 11);
   }
 
+  .surface-light {
+    --foreground: #151515;
+    background-color: #fff;
+  }
+
+  .surface-dark {
+    background-color: var(--color-zinc-900, #18181b);
+    --foreground: #fff;
+  }
+
   .btn {
     min-height: calc(var(--spacing) * 10);
     justify-content: center;
@@ -391,13 +405,11 @@
     gap: calc(var(--spacing) * 2);
     border-radius: var(--radius-lg);
     border-style: var(--tw-border-style);
-    background-color: var(--color-button);
     padding-inline: calc(var(--spacing) * 4);
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
-    color: var(--color-button-text);
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
@@ -406,26 +418,94 @@
     display: inline-flex;
   }
 
-  @media (hover: hover) {
-    .btn:hover {
-      opacity: .9;
-    }
-  }
-
   .btn:disabled {
     cursor: not-allowed;
     opacity: .5;
   }
 
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-button-text);
+  }
+
+  @media (hover: hover) {
+    .btn-primary:hover {
+      opacity: .9;
+    }
+  }
+
   .btn-secondary {
-    border-color: var(--color-neutral-300);
-    background-color: var(--color-white);
-    color: var(--color-text);
+    background-color: var(--color-secondary);
+    color: var(--color-button-text);
   }
 
   @media (hover: hover) {
     .btn-secondary:hover {
-      background-color: var(--color-neutral-50);
+      opacity: .9;
+    }
+  }
+
+  .btn-outline-primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: #0000;
+  }
+
+  @media (hover: hover) {
+    .btn-outline-primary:hover {
+      background-color: var(--color-primary);
+    }
+  }
+
+  @media (hover: hover) {
+    .btn-outline-primary:hover {
+      color: var(--color-button-text);
+    }
+  }
+
+  .btn-outline-secondary {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+    background-color: #0000;
+  }
+
+  @media (hover: hover) {
+    .btn-outline-secondary:hover {
+      background-color: var(--color-secondary);
+    }
+  }
+
+  @media (hover: hover) {
+    .btn-outline-secondary:hover {
+      color: var(--color-button-text);
+    }
+  }
+
+  .btn-ghost {
+    color: var(--color-foreground);
+    background-color: #0000;
+  }
+
+  @media (hover: hover) {
+    .btn-ghost:hover {
+      background-color: #0000000d;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .btn-ghost:hover {
+        background-color: color-mix(in oklab, var(--color-black) 5%, transparent);
+      }
+    }
+  }
+
+  .btn-cms {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+  }
+
+  @media (hover: hover) {
+    .btn-cms:hover {
+      opacity: .9;
     }
   }
 
@@ -480,6 +560,10 @@
 
   .absolute {
     position: absolute;
+  }
+
+  .fixed {
+    position: fixed;
   }
 
   .relative {
@@ -679,6 +763,10 @@
     height: calc(var(--spacing) * 11);
   }
 
+  .h-auto {
+    height: auto;
+  }
+
   .h-full {
     height: 100%;
   }
@@ -693,6 +781,10 @@
 
   .min-h-9 {
     min-height: calc(var(--spacing) * 9);
+  }
+
+  .min-h-10 {
+    min-height: calc(var(--spacing) * 10);
   }
 
   .min-h-13 {
@@ -715,12 +807,16 @@
     min-height: 500px;
   }
 
-  .min-h-\[600px\] {
-    min-height: 600px;
+  .min-h-\[700px\] {
+    min-height: 700px;
   }
 
   .w-1\.5 {
     width: calc(var(--spacing) * 1.5);
+  }
+
+  .w-3\/4 {
+    width: 75%;
   }
 
   .w-6 {
@@ -733,6 +829,10 @@
 
   .w-\[150px\] {
     width: 150px;
+  }
+
+  .w-\[300px\] {
+    width: 300px;
   }
 
   .w-auto {
@@ -841,6 +941,10 @@
 
   .gap-4 {
     gap: calc(var(--spacing) * 4);
+  }
+
+  .gap-6 {
+    gap: calc(var(--spacing) * 6);
   }
 
   .gap-7 {
@@ -1034,6 +1138,10 @@
     background-position: center;
   }
 
+  .object-contain {
+    object-fit: contain;
+  }
+
   .object-cover {
     object-fit: cover;
   }
@@ -1223,6 +1331,11 @@
     font-weight: var(--font-weight-extrabold);
   }
 
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+
   .font-normal {
     --tw-font-weight: var(--font-weight-normal);
     font-weight: var(--font-weight-normal);
@@ -1270,6 +1383,30 @@
     color: var(--color-button-text);
   }
 
+  .text-foreground {
+    color: var(--color-foreground);
+  }
+
+  .text-foreground\/50 {
+    color: var(--color-foreground);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-foreground\/50 {
+      color: color-mix(in oklab, var(--color-foreground) 50%, transparent);
+    }
+  }
+
+  .text-foreground\/70 {
+    color: var(--color-foreground);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-foreground\/70 {
+      color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
+    }
+  }
+
   .text-neutral-400 {
     color: var(--color-neutral-400);
   }
@@ -1300,6 +1437,26 @@
 
   .text-white {
     color: var(--color-white);
+  }
+
+  .text-white\/50 {
+    color: #ffffff80;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-white\/50 {
+      color: color-mix(in oklab, var(--color-white) 50%, transparent);
+    }
+  }
+
+  .text-white\/70 {
+    color: #ffffffb3;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-white\/70 {
+      color: color-mix(in oklab, var(--color-white) 70%, transparent);
+    }
   }
 
   .text-white\/90 {
@@ -1390,7 +1547,19 @@
     .group-hover\:scale-\[1\.025\]:is(:where(.group):hover *) {
       scale: 1.025;
     }
+  }
 
+  .placeholder\:text-foreground\/50::placeholder {
+    color: var(--color-foreground);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .placeholder\:text-foreground\/50::placeholder {
+      color: color-mix(in oklab, var(--color-foreground) 50%, transparent);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:scale-105:hover {
       --tw-scale-x: 105%;
       --tw-scale-y: 105%;
@@ -1418,8 +1587,16 @@
       color: var(--color-black);
     }
 
+    .hover\:text-foreground:hover {
+      color: var(--color-foreground);
+    }
+
     .hover\:text-primary:hover {
       color: var(--color-primary);
+    }
+
+    .hover\:text-white:hover {
+      color: var(--color-white);
     }
 
     .hover\:underline:hover {
@@ -1531,6 +1708,7 @@
 
 :root {
   --container: 1440px;
+  --foreground: var(--color-text);
 }
 
 * {

@@ -10,9 +10,13 @@ export function Footer({
   settings: SiteSettings;
 }) {
   return (
-    <footer className="w-full border-t border-black/5 bg-background text-text">
+    // surface-dark: fixed zinc-900 chrome, independent of the CMS
+    // background color. text-foreground flips to white automatically
+    // because of that surface — same pattern as the header, opposite
+    // color.
+    <footer className="surface-dark text-white">
       <div className="container flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
-        <p className="text-sm text-secondary">{settings.footerText}</p>
+        <p className="text-sm text-white/70">{settings.footerText}</p>
 
         <nav className="flex flex-wrap items-center gap-4">
           {settings.footerNavLinks.map((link) => (
@@ -21,7 +25,7 @@ export function Footer({
               href={link.url}
               target={link.openInNewTab ? "_blank" : undefined}
               rel={link.openInNewTab ? "noopener noreferrer" : undefined}
-              className="text-sm text-secondary transition-colors hover:text-primary">
+              className="text-sm text-white/70 transition-colors hover:text-foreground">
               {link.label}
             </Link>
           ))}
@@ -35,14 +39,14 @@ export function Footer({
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-secondary transition-colors hover:text-primary">
+                className="text-sm text-white/70 transition-colors hover:text-white">
                 {link.label}
               </a>
             ))}
           </div>
         )}
 
-        <p className="text-xs text-secondary">{dict.contact}</p>
+        <p className="text-xs text-white/50">{dict.contact}</p>
       </div>
     </footer>
   );

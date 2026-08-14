@@ -36,30 +36,32 @@ export function Header({
   segments[1] = nextLocale;
   const languageHref = segments.join("/");
 
-  // Only render a real logo image if Contentful actually provided one —
-  // otherwise fall back to the text wordmark, same as before.
   const hasCmsLogo = settings.logoUrl && settings.logoUrl !== "/logo.svg";
 
   return (
-    <>
-      {/* <div className="bg-primary text-button-text text-xs">
+    // surface-light: fixed white chrome that ignores the CMS background
+    // color on purpose (header/footer are brand chrome, not content).
+    // Everything inside uses text-foreground, which resolves to dark
+    // text automatically because of that surface.
+    <div className="surface-light text-foreground">
+      {/* <div className="text-xs text-foreground/70">
         <div className="container flex min-h-8 items-center justify-between gap-4">
           <span className="hidden sm:block">{dict.email}</span>
           <span>{dict.contact}</span>
         </div>
       </div> */}
 
-      <header className="sticky top-0 z-40 border-b border-neutral-200 bg-background/95 text-text backdrop-blur">
-        <div className="container flex min-h-[74px] items-center gap-4">
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-white/95 backdrop-blur">
+        <div className="container flex min-h-[74px] items-center gap-7">
           <Link href={`/${locale}`} className="shrink-0">
             {hasCmsLogo ? (
               <Image
                 src={settings.logoUrl}
                 alt={settings.logoAlt || settings.siteName}
-                width={240}
-                height={100}
+                width={140}
+                height={32}
                 priority
-                className="h-8 w-auto"
+                className="object-contain"
               />
             ) : (
               <span className="text-2xl font-black tracking-[-0.06em] text-primary">
@@ -74,13 +76,13 @@ export function Header({
             <input
               name="q"
               placeholder={dict.search}
-              className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm outline-none"
+              className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm text-foreground outline-none placeholder:text-foreground/50"
             />
 
             <button
               type="submit"
               aria-label={dict.search}
-              className="grid w-12 place-items-center bg-button text-button-text">
+              className="grid w-12 place-items-center bg-primary text-button-text">
               <Search size={17} />
             </button>
           </form>
@@ -88,13 +90,13 @@ export function Header({
           <div className="ml-auto flex shrink-0 items-center gap-2">
             <Link
               href={languageHref}
-              className="rounded-full border border-neutral-200 px-3 py-2 text-xs hover:border-primary hover:text-primary">
+              className="rounded-full border border-neutral-200 px-3 py-2 text-xs text-foreground hover:border-primary hover:text-primary">
               {dict.language}
             </Link>
 
             <Link
               href={`/${locale}/basket`}
-              className="relative grid size-11 place-items-center rounded-full border border-neutral-200 hover:border-primary"
+              className="relative grid size-11 place-items-center rounded-full border border-neutral-200 text-foreground hover:border-primary"
               aria-label={dict.cart}>
               <ShoppingBasket size={19} />
 
@@ -107,6 +109,6 @@ export function Header({
           </div>
         </div>
       </header>
-    </>
+    </div>
   );
 }
