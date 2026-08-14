@@ -1,6 +1,12 @@
 import { createClient } from "contentful";
-import { products as dummyProducts, categories as dummyCategories } from "./data";
+import { unstable_cache } from "next/cache";
+import {
+  products as dummyProducts,
+  categories as dummyCategories,
+} from "./data";
 import type { Product, Category } from "./types";
+import type { SiteSettings } from "./theme-types";
+import { DEFAULT_SITE_SETTINGS } from "./theme-defaults";
 
 const client =
   process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_ACCESS_TOKEN
@@ -9,6 +15,8 @@ const client =
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
       })
     : null;
+
+// ...your existing getProducts / getCategories / getProductBySlug / getRelatedProducts, unchanged...
 
 export async function getProducts(): Promise<Product[]> {
   if (!client) return dummyProducts;
@@ -75,3 +83,78 @@ export async function getRelatedProducts(product: Product) {
     )
     .slice(0, 12);
 }
+
+// ---------------------------------------------------------------------
+// Site settings / theme / header-footer / SEO
+// ---------------------------------------------------------------------
+
+function assetUrl(asset: any): string | undefined {
+  const url = asset?.fields?.file?.url;
+  return url ? `https:${url}` : undefined;
+}
+
+function mapNavLinks(links: any, fallback: SiteSettings["footerNavLinks"]) {
+  if (!Array.isArray(links)) return fallback;
+  return links
+    .map((l: any) => ({
+      label: l?.fields?.label ?? "",
+      url: l?.fields?.url ?? "#",
+      openInNewTab: !!l?.fields?.openInNewTab,
+    }))
+    .filter((l) => l.label);
+}
+
+function mapSiteSettings(item: any): SiteSettings {
+  const defaults = DEFAULT_SITE_SETTINGS;
+  if (!item) return defaults;
+  const f = item.fields ?? {};
+
+  return {
+    siteName: f.siteName ?? defaults.siteName,
+    logoUrl: assetUrl(f.logo) ?? defaults.logoUrl,
+    logoAlt: f.logoAlt ?? f.siteName ?? defaults.logoAlt,
+    theme: {
+      backgroundColor: f.backgroundColor ?? defaults.theme.backgroundColor,
+      textColor: f.textColor ?? defaults.theme.textColor,
+      primaryColor: f.primaryColor ?? defaults.theme.primaryColor,
+      secondaryColor: f.secondaryColor ?? defaults.theme.secondaryColor,
+      buttonColor: f.buttonColor ?? defaults.theme.buttonColor,
+      buttonTextColor: f.buttonTextColor ?? defaults.theme.buttonTextColor,
+      fontFamily: f.fontFamily ?? defaults.theme.fontFamily,
+    },
+    seo: {
+      title: f.seoTitle ?? defaults.seo.title,
+      description: f.seoDescription ?? defaults.seo.description,
+      keywords: Array.isArray(f.seoKeywords)
+        ? f.seoKeywords
+        : defaults.seo.keywords,
+      ogImageUrl: assetUrl(f.ogImage),
+      faviconUrl: assetUrl(f.favicon),
+      canonicalUrl: f.canonicalUrl ?? "",
+    },
+    footerNavLinks: mapNavLinks(f?.footerNavLinks, defaults?.footerNavLinks),
+    footerText: f.footerText ?? defaults.footerText,
+    socialLinks: mapNavLinks(f.socialLinks, defaults.socialLinks ?? []),
+  };
+}
+
+async function fetchSiteSettings(): Promise<SiteSettings> {
+  if (!client) return DEFAULT_SITE_SETTINGS;
+
+  try {
+    const result = await client.getEntries<any>({
+      content_type: "siteSettings",
+      limit: 1,
+      include: 2,
+    });
+    return mapSiteSettings(result.items[0]);
+  } catch {
+    return DEFAULT_SITE_SETTINGS;
+  }
+}
+
+export const getSiteSettings = unstable_cache(
+  fetchSiteSettings,
+  ["site-settings"],
+  { revalidate: 3600, tags: ["siteSettings"] }
+);

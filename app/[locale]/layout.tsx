@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { translations } from "@/lib/i18n";
+import { getSiteSettings } from "@/lib/contentful";
 import type { Locale } from "@/lib/types";
+import { Footer } from "@/components/footer";
 
 export default async function LocaleLayout({
   children,
@@ -16,12 +17,13 @@ export default async function LocaleLayout({
   if (locale !== "en" && locale !== "bn") notFound();
 
   const dict = translations[locale as Locale];
+  const settings = await getSiteSettings();
 
   return (
     <>
-      <Header locale={locale as Locale} dict={dict} />
+      <Header locale={locale as Locale} dict={dict} settings={settings} />
       {children}
-      <Footer dict={dict} />
+      <Footer dict={dict} settings={settings} />
     </>
   );
 }

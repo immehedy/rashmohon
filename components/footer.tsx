@@ -1,31 +1,48 @@
+import Link from "next/link";
+import type { SiteSettings } from "@/lib/theme-types";
 import type { Dictionary } from "@/lib/i18n";
 
-export function Footer({ dict }: { dict: Dictionary }) {
+export function Footer({
+  dict,
+  settings,
+}: {
+  dict: Dictionary;
+  settings: SiteSettings;
+}) {
   return (
-    <footer className="mt-12 border-t border-neutral-200 bg-black text-white">
-      <div className="container grid gap-10 py-12 md:grid-cols-3">
-        <div>
-          <div className="text-xl font-black">RASHMOHON</div>
-          <p className="mt-3 max-w-sm text-sm leading-7 text-neutral-400">
-            Modern ecommerce starter powered by Next.js, Tailwind CSS,
-            Contentful and Zustand.
-          </p>
-        </div>
-        <div>
-          <h3 className="font-bold">{dict.contact}</h3>
-          <p className="mt-3 text-sm text-neutral-400">{dict.email}</p>
-        </div>
-        <div>
-          <h3 className="font-bold">{dict.cod}</h3>
-          <p className="mt-3 text-sm leading-7 text-neutral-400">
-            {dict.shipping} — {dict.cod}
-          </p>
-        </div>
-      </div>
-      <div className="border-t border-neutral-800">
-        <div className="container py-5 text-xs text-neutral-500">
-          © {new Date().getFullYear()} RASHMOHON Online Shop
-        </div>
+    <footer className="w-full border-t border-black/5 bg-background text-text">
+      <div className="container flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
+        <p className="text-sm text-secondary">{settings.footerText}</p>
+
+        <nav className="flex flex-wrap items-center gap-4">
+          {settings.footerNavLinks.map((link) => (
+            <Link
+              key={link.url + link.label}
+              href={link.url}
+              target={link.openInNewTab ? "_blank" : undefined}
+              rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+              className="text-sm text-secondary transition-colors hover:text-primary">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {!!settings.socialLinks?.length && (
+          <div className="flex items-center gap-4">
+            {settings.socialLinks.map((link) => (
+              <a
+                key={link.url + link.label}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-secondary transition-colors hover:text-primary">
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
+
+        <p className="text-xs text-secondary">{dict.contact}</p>
       </div>
     </footer>
   );
