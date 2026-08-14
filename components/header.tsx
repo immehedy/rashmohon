@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBasket } from "lucide-react";
+import { Menu, Search, ShoppingBasket, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
 import type { Dictionary } from "@/lib/i18n";
@@ -23,6 +23,7 @@ export function Header({
   const count = items.reduce((total, item) => total + item.quantity, 0);
 
   const [hydrated, setHydrated] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
@@ -36,6 +37,10 @@ export function Header({
   segments[1] = nextLocale;
   const languageHref = segments.join("/");
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   const hasCmsLogo = settings.logoUrl && settings.logoUrl !== "/logo.svg";
 
   return (
@@ -44,15 +49,8 @@ export function Header({
     // Everything inside uses text-foreground, which resolves to dark
     // text automatically because of that surface.
     <div className="surface-light text-foreground">
-      {/* <div className="text-xs text-foreground/70">
-        <div className="container flex min-h-8 items-center justify-between gap-4">
-          <span className="hidden sm:block">{dict.email}</span>
-          <span>{dict.contact}</span>
-        </div>
-      </div> */}
-
       <header className="sticky top-0 z-40 border-b border-black/5 bg-white/95 backdrop-blur">
-        <div className="container flex min-h-[74px] items-center gap-7">
+        <div className="container flex min-h-[72px] items-center justify-between gap-6 md:min-h-[88px] md:gap-10">
           <Link href={`/${locale}`} className="shrink-0">
             {hasCmsLogo ? (
               <Image
@@ -61,7 +59,7 @@ export function Header({
                 width={140}
                 height={32}
                 priority
-                className="object-contain"
+                className="object-contain flex-1"
               />
             ) : (
               <span className="text-2xl font-black tracking-[-0.06em] text-primary">
@@ -72,31 +70,25 @@ export function Header({
 
           <form
             action={`/${locale}`}
-            className="order-3 flex w-full basis-full overflow-hidden rounded-full border border-neutral-300 md:order-none md:flex-1 md:basis-auto">
+            className="hidden overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 transition-colors focus-within:border-primary/40 focus-within:bg-white md:flex md:max-w-md md:flex-1">
             <input
               name="q"
               placeholder={dict.search}
-              className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm text-foreground outline-none placeholder:text-foreground/50"
+              className="min-w-0 flex-1 border-0 bg-transparent px-5 py-2.5 text-sm text-foreground outline-none placeholder:text-foreground/40"
             />
 
             <button
               type="submit"
               aria-label={dict.search}
-              className="grid w-12 place-items-center bg-primary text-button-text">
+              className="grid w-12 place-items-center bg-primary text-button-text transition-opacity hover:opacity-90">
               <Search size={17} />
             </button>
           </form>
 
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Link
-              href={languageHref}
-              className="rounded-full border border-neutral-200 px-3 py-2 text-xs text-foreground hover:border-primary hover:text-primary">
-              {dict.language}
-            </Link>
-
+          <div className="ml-auto flex shrink-0 items-center gap-3 md:gap-4">
             <Link
               href={`/${locale}/basket`}
-              className="relative grid size-11 place-items-center rounded-full border border-neutral-200 text-foreground hover:border-primary"
+              className="relative grid size-11 place-items-center rounded-full border border-neutral-200 text-foreground transition-colors hover:border-primary hover:text-primary"
               aria-label={dict.cart}>
               <ShoppingBasket size={19} />
 
@@ -106,6 +98,55 @@ export function Header({
                 </span>
               )}
             </Link>
+
+            <Link
+              href={languageHref}
+              className="hidden rounded-full border border-neutral-200 px-4 py-2.5 text-xs font-medium tracking-wide text-foreground transition-colors hover:border-primary hover:text-primary md:inline-flex">
+              {dict.language}
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="grid size-11 place-items-center rounded-full border border-neutral-200 text-foreground transition-colors hover:border-primary hover:text-primary md:hidden">
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile drawer */}
+        <div
+          className={`grid overflow-hidden border-black/5 transition-[grid-template-rows,opacity] duration-300 ease-in-out md:hidden ${
+            menuOpen
+              ? "grid-rows-[1fr] border-t opacity-100"
+              : "grid-rows-[0fr] opacity-0"
+          }`}>
+          <div className="min-h-0 overflow-hidden">
+            <div className="container flex flex-col gap-4 py-5">
+              <form action={`/${locale}`} className="flex overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 transition-colors focus-within:border-primary/40 focus-within:bg-white">
+                <input
+                  name="q"
+                  placeholder={dict.search}
+                  className="min-w-0 flex-1 border-0 bg-transparent px-5 py-3 text-sm text-foreground outline-none placeholder:text-foreground/40"
+                />
+
+                <button
+                  type="submit"
+                  aria-label={dict.search}
+                  className="grid w-12 place-items-center bg-primary text-button-text transition-opacity hover:opacity-90">
+                  <Search size={17} />
+                </button>
+              </form>
+
+              <Link
+                href={languageHref}
+                onClick={() => setMenuOpen(false)}
+                className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-3 text-xs font-medium tracking-wide text-foreground transition-colors hover:border-primary hover:text-primary">
+                {dict.language}
+              </Link>
+            </div>
           </div>
         </div>
       </header>

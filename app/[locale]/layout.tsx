@@ -23,7 +23,7 @@ export default async function LocaleLayout({
     <>
       <Header locale={locale as Locale} dict={dict} settings={settings} />
       {children}
-      <Footer dict={dict} settings={settings} />
+      <Footer locale={locale as Locale} dict={dict} settings={settings} />
     </>
   );
 }
