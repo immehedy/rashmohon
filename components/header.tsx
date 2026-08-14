@@ -42,12 +42,12 @@ export function Header({
 
   return (
     <>
-      <div className="bg-primary text-button-text text-xs">
+      {/* <div className="bg-primary text-button-text text-xs">
         <div className="container flex min-h-8 items-center justify-between gap-4">
           <span className="hidden sm:block">{dict.email}</span>
           <span>{dict.contact}</span>
         </div>
-      </div>
+      </div> */}
 
       <header className="sticky top-0 z-40 border-b border-neutral-200 bg-background/95 text-text backdrop-blur">
         <div className="container flex min-h-[74px] items-center gap-4">
@@ -56,8 +56,8 @@ export function Header({
               <Image
                 src={settings.logoUrl}
                 alt={settings.logoAlt || settings.siteName}
-                width={140}
-                height={32}
+                width={240}
+                height={100}
                 priority
                 className="h-8 w-auto"
               />

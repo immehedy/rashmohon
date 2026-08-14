@@ -1,21 +1,46 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
 
 export function Hero({
   locale,
   dict,
+  heroImages,
 }: {
   locale: "en" | "bn";
   dict: Dictionary;
+  heroImages: string[];
 }) {
+  const images = heroImages.length > 0 ? heroImages : [FALLBACK_IMAGE];
+  const [index, setIndex] = useState(0);
+
+  // Auto-rotate only if there's more than one image — a single image
+  // (or the default) just renders statically, no timer needed.
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % images.length);
+    }, 6000);
+    return () => clearInterval(id);
+  }, [images.length]);
+
   return (
-    <section
-      className="min-h-[500px] bg-cover bg-center text-white"
-      style={{
-        backgroundImage:
-          "linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.08)),url(https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=2200&q=85)",
-      }}>
-      <div className="container flex min-h-[500px] items-end">
+    <section className="relative min-h-[500px] overflow-hidden text-white">
+      {images.map((src, i) => (
+        <div
+          key={src + i}
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{
+            backgroundImage: `linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.08)),url(${src})`,
+            opacity: i === index ? 1 : 0,
+          }}
+          aria-hidden={i !== index}
+        />
+      ))}
+
+      {/* <div className="container relative flex min-h-[500px] items-end">
         <div className="max-w-2xl pb-16">
           <div className="text-[11px] font-bold uppercase tracking-[.16em]">
             RASHMOHON Online Shop
@@ -36,7 +61,26 @@ export function Hero({
             {dict.shopNow}
           </Link>
         </div>
-      </div>
+
+        {images.length > 1 && (
+          <div className="absolute bottom-6 right-0 flex gap-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Slide ${i + 1}`}
+                onClick={() => setIndex(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? "w-6 bg-white" : "w-1.5 bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div> */}
     </section>
   );
 }
+
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=2200&q=85";

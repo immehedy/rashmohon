@@ -13,10 +13,9 @@ const client =
     ? createClient({
         space: process.env.CONTENTFUL_SPACE_ID,
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+        environment: process.env.CONTENTFUL_ENVIRONMENT || "master",
       })
     : null;
-
-// ...your existing getProducts / getCategories / getProductBySlug / getRelatedProducts, unchanged...
 
 export async function getProducts(): Promise<Product[]> {
   if (!client) return dummyProducts;
@@ -26,6 +25,10 @@ export async function getProducts(): Promise<Product[]> {
       content_type: "product",
       include: 2,
     });
+
+    // Client configured but nothing published yet in Contentful —
+    // keep showing static data instead of an empty grid.
+    if (result.items.length === 0) return dummyProducts;
 
     return result.items.map((item: any) => ({
       id: item.sys.id,
@@ -42,7 +45,8 @@ export async function getProducts(): Promise<Product[]> {
       categoryName: item.fields.category?.fields?.name ?? "",
       categoryNameBn: item.fields.category?.fields?.nameBn ?? "",
     }));
-  } catch {
+  } catch (err) {
+    console.error("[contentful] getProducts failed, using static data:", err);
     return dummyProducts;
   }
 }
@@ -53,6 +57,8 @@ export async function getCategories(): Promise<Category[]> {
   try {
     const result = await client.getEntries<any>({ content_type: "category" });
 
+    if (result.items.length === 0) return dummyCategories;
+
     return result.items.map((item: any) => ({
       id: item.sys.id,
       name: item.fields.name,
@@ -62,7 +68,8 @@ export async function getCategories(): Promise<Category[]> {
         ? `https:${item.fields.image.fields.file.url}`
         : dummyCategories[0].image,
     }));
-  } catch {
+  } catch (err) {
+    console.error("[contentful] getCategories failed, using static data:", err);
     return dummyCategories;
   }
 }
@@ -76,11 +83,7 @@ export async function getRelatedProducts(product: Product) {
   const all = await getProducts();
 
   return all
-    .filter(
-      (p) =>
-        p.categoryId === product.categoryId &&
-        p.id !== product.id
-    )
+    .filter((p) => p.categoryId === product.categoryId && p.id !== product.id)
     .slice(0, 12);
 }
 
@@ -93,7 +96,7 @@ function assetUrl(asset: any): string | undefined {
   return url ? `https:${url}` : undefined;
 }
 
-function mapNavLinks(links: any, fallback: SiteSettings["footerNavLinks"]) {
+function mapNavLinks(links: any, fallback: SiteSettings["headerNavLinks"]) {
   if (!Array.isArray(links)) return fallback;
   return links
     .map((l: any) => ({
@@ -107,12 +110,20 @@ function mapNavLinks(links: any, fallback: SiteSettings["footerNavLinks"]) {
 function mapSiteSettings(item: any): SiteSettings {
   const defaults = DEFAULT_SITE_SETTINGS;
   if (!item) return defaults;
+
   const f = item.fields ?? {};
+
+  const heroImages = Array.isArray(f.heroImages)
+    ? (f.heroImages
+        .map((img: any) => assetUrl(img))
+        .filter(Boolean) as string[])
+    : [];
 
   return {
     siteName: f.siteName ?? defaults.siteName,
     logoUrl: assetUrl(f.logo) ?? defaults.logoUrl,
     logoAlt: f.logoAlt ?? f.siteName ?? defaults.logoAlt,
+    heroImages: heroImages.length > 0 ? heroImages : defaults.heroImages,
     theme: {
       backgroundColor: f.backgroundColor ?? defaults.theme.backgroundColor,
       textColor: f.textColor ?? defaults.theme.textColor,
@@ -132,7 +143,8 @@ function mapSiteSettings(item: any): SiteSettings {
       faviconUrl: assetUrl(f.favicon),
       canonicalUrl: f.canonicalUrl ?? "",
     },
-    footerNavLinks: mapNavLinks(f?.footerNavLinks, defaults?.footerNavLinks),
+    headerNavLinks: mapNavLinks(f.headerNavLinks, defaults.headerNavLinks),
+    footerNavLinks: mapNavLinks(f.footerNavLinks, defaults.footerNavLinks),
     footerText: f.footerText ?? defaults.footerText,
     socialLinks: mapNavLinks(f.socialLinks, defaults.socialLinks ?? []),
   };
@@ -147,12 +159,23 @@ async function fetchSiteSettings(): Promise<SiteSettings> {
       limit: 1,
       include: 2,
     });
+
+    if (result.items.length === 0) return DEFAULT_SITE_SETTINGS;
+
     return mapSiteSettings(result.items[0]);
-  } catch {
+  } catch (err) {
+    console.error("[contentful] getSiteSettings failed, using defaults:", err);
     return DEFAULT_SITE_SETTINGS;
   }
 }
 
+/**
+ * Cached for 1hr, tagged "siteSettings" — call
+ * revalidateTag("siteSettings") from a Contentful publish webhook
+ * (see app/api/revalidate/route.ts) to bust it instantly on publish.
+ * Falls back to DEFAULT_SITE_SETTINGS on any error, same as the
+ * product/category fetchers above.
+ */
 export const getSiteSettings = unstable_cache(
   fetchSiteSettings,
   ["site-settings"],

@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-family-base, Arial, Helvetica, sans-serif);
+  --color-background: var(--bg-color, #ffffff);
+  --color-text: var(--text-color, #151515);
+  --color-primary: var(--primary-color, #0f62fe);
+  --color-secondary: var(--secondary-color, #6f6f6f);
+  --color-button: var(--button-color, #151515);
+  --color-button-text: var(--button-text-color, #ffffff);
 }
 
 :root {
@@ -18,9 +24,9 @@ html {
 
 body {
   margin: 0;
-  background: #fff;
-  color: #151515;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
 }
 
 button,
@@ -45,11 +51,11 @@ button {
   }
 
   .btn {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-black bg-black px-4 text-xs font-bold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-transparent bg-button px-4 text-xs font-bold text-button-text transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply border-neutral-300 bg-white text-black hover:bg-neutral-50;
+    @apply border-neutral-300 bg-white text-text hover:bg-neutral-50;
   }
 
   .product-card {

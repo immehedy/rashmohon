@@ -1,5 +1,5 @@
 import { translations } from "@/lib/i18n";
-import { getCategories, getProducts } from "@/lib/contentful";
+import { getCategories, getProducts, getSiteSettings } from "@/lib/contentful";
 import { Hero } from "@/components/hero";
 import { CategoryCarousel } from "@/components/category-carousel";
 import { ProductGrid } from "@/components/product-grid";
@@ -14,9 +14,10 @@ export default async function Home({
   const { locale } = await params;
   const dict = translations[locale];
 
-  const [allCategories, allProducts] = await Promise.all([
+  const [allCategories, allProducts, settings] = await Promise.all([
     getCategories(),
     getProducts(),
+    getSiteSettings(),
   ]);
 
   const categories = allCategories.filter((category) =>
@@ -29,7 +30,7 @@ export default async function Home({
 
   return (
     <>
-      <Hero locale={locale} dict={dict} />
+      <Hero locale={locale} dict={dict} heroImages={settings.heroImages} />
 
       <main>
         <section className="section">
@@ -48,11 +49,7 @@ export default async function Home({
             <h2 className="mb-5 text-2xl font-black tracking-tight">
               {dict.products}
             </h2>
-            <ProductGrid
-              products={products}
-              locale={locale}
-              dict={dict}
-            />
+            <ProductGrid products={products} locale={locale} dict={dict} />
           </div>
         </section>
       </main>
