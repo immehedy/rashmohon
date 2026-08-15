@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useCartStore } from "@/store/cart-store";
@@ -15,13 +16,21 @@ export function ProductCard({
   locale: Locale;
   dict: Dictionary;
 }) {
+  const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
 
   const name = locale === "bn" ? product.nameBn : product.name;
 
+  function handleOrderNow() {
+    addItem(product);
+    router.push(`/${locale}/basket`);
+  }
+
   return (
-    <article className="product-card space-y-2">
-      <Link href={`/${locale}/products/${product.slug}`} className="block space-y-2">
+    <article className="product-card space-y-2 border p-2 bg-white border-zinc-200">
+      <Link
+        href={`/${locale}/products/${product.slug}`}
+        className="block space-y-2">
         <div className="product-image">
           <Image
             src={product.image}
@@ -39,20 +48,18 @@ export function ProductCard({
         </div>
       </Link>
 
-      <div className="mt-2 grid grid-cols-2 gap-1.5">
+      <div className="mt-2 grid grid-cols-2 gap-1.5 mb-2">
         <button
-          className="btn min-h-9 rounded-md px-2 text-sm"
-          onClick={() => addItem(product)}
-        >
-          {dict.addToCart}
+          className="btn min-h-7 min-w-0 px-1 rounded-sm text-[12px]"
+          onClick={() => addItem(product)}>
+          <span className="truncate">{dict.addToCart}</span>
         </button>
 
-        <Link
-          href={`/${locale}/basket?order=${product.slug}`}
-          className="btn btn-secondary min-h-9 rounded-md px-2 text-sm"
-        >
-          {dict.orderNow}
-        </Link>
+        <button
+          className="btn btn-secondary min-h-7 min-w-0 px-1 rounded-sm text-[12px]"
+          onClick={handleOrderNow}>
+          <span className="truncate">{dict.orderNow}</span>
+        </button>
       </div>
     </article>
   );

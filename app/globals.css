@@ -81,7 +81,7 @@ button {
      below when you need the brand's primary/secondary color instead.
      --------------------------------------------------------------- */
   .btn {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-transparent bg-black px-4 text-xs font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-7 min-w-0 items-center justify-center gap-2 border border-transparent bg-black px-1 text-xs font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   /* Solid, filled with the brand's primary color (site settings). */
