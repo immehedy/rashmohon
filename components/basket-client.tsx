@@ -22,6 +22,7 @@ import {
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
 import { useCartStore } from "@/store/cart-store";
+import { Button } from "./ui/button";
 
 const DELIVERY_RATES = {
   dhaka: 80,
@@ -380,17 +381,19 @@ export function BasketClient({
           />
           <span>{dict.cod}</span>
         </div>
-
-        <button
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          fullWidth
           disabled={loading || !items.length}
-          className="btn mt-4 flex w-full items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
-          type="submit">
+          className="mt-4">
           {loading ? (
             <Loader2 size={16} className="animate-spin" />
           ) : (
             dict.placeOrder
           )}
-        </button>
+        </Button>
       </form>
     </div>
   );

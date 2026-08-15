@@ -89,7 +89,7 @@ export function ProductCard({
 
       <div className="mt-auto grid grid-cols-2 gap-1.5 mb-2">
         <Button
-          variant="primary"
+          variant="outline"
           size="xs"
           className="min-w-0 px-1"
           onClick={() => addItem(product, 1)}>
@@ -97,7 +97,7 @@ export function ProductCard({
         </Button>
 
         <Button
-          variant="secondary"
+          variant="primary"
           size="xs"
           className="min-w-0 px-1"
           onClick={handleOrderNow}>
