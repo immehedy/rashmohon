@@ -140,7 +140,7 @@ export function BasketClient({
                   className="group grid grid-cols-[52px_1fr_auto] items-start gap-3 py-3.5">
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-neutral-50 ring-1 ring-neutral-100">
                     <Image
-                      src={item.image}
+                      src={item.images[0]}
                       alt={name}
                       fill
                       sizes="52px"
