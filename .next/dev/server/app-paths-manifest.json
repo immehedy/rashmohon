@@ -1,5 +1,8 @@
 {
   "/[locale]/basket/page": "app/[locale]/basket/page.js",
+  "/[locale]/categories/[slug]/page": "app/[locale]/categories/[slug]/page.js",
   "/[locale]/page": "app/[locale]/page.js",
-  "/[locale]/products/[slug]/page": "app/[locale]/products/[slug]/page.js"
+  "/[locale]/products/[slug]/page": "app/[locale]/products/[slug]/page.js",
+  "/api/orders/route": "app/api/orders/route.js",
+  "/page": "app/page.js"
 }

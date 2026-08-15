@@ -50,6 +50,8 @@ export const translations = {
     deliveryArea: "Delivery Area",
     insideDhaka: "In Side Dhaka",
     outsideDhaka: "Out Side Dhaka",
+    home: "Home",
+    noProductsInCategory: "No products found in this category.",
   },
   bn: {
     email: "hello@rashmohon.com",
@@ -100,6 +102,8 @@ export const translations = {
     deliveryArea: "ডেলিভারি এলাকা",
     insideDhaka: "ঢাকার ভিতরে",
     outsideDhaka: "ঢাকার বাইরে ",
+    home: "হোম",
+    noProductsInCategory: "এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।",
   },
 } as const;
 

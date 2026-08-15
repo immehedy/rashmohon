@@ -14,9 +14,8 @@ export function CategoryCarousel({
       {categories.map((category) => (
         <Link
           key={category.id}
-          href={`/${locale}?category=${category.slug}`}
-          className="w-[150px] shrink-0"
-        >
+          href={`/${locale}/categories/${category.slug}`}
+          className="w-[150px] shrink-0">
           <div className="aspect-square overflow-hidden rounded-xl bg-neutral-100">
             <Image
               src={category.image}

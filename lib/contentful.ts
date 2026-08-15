@@ -26,25 +26,35 @@ export async function getProducts(): Promise<Product[]> {
       include: 2,
     });
 
-    // Client configured but nothing published yet in Contentful —
-    // keep showing static data instead of an empty grid.
     if (result.items.length === 0) return dummyProducts;
 
-    return result.items.map((item: any) => ({
-      id: item.sys.id,
-      slug: item.fields.slug,
-      name: item.fields.name,
-      nameBn: item.fields.nameBn ?? "",
-      description: item.fields.description ?? "",
-      descriptionBn: item.fields.descriptionBn ?? "",
-      price: Number(item.fields.price ?? 0),
-      image: item.fields.image?.fields?.file?.url
-        ? `https:${item.fields.image.fields.file.url}`
-        : dummyProducts[0].image,
-      categoryId: item.fields.category?.sys?.id ?? "",
-      categoryName: item.fields.category?.fields?.name ?? "",
-      categoryNameBn: item.fields.category?.fields?.nameBn ?? "",
-    }));
+    return result.items.map((item: any) => {
+      const imagesField = item.fields.images;
+      const images: string[] = Array.isArray(imagesField)
+        ? imagesField
+            .map((img: any) => img?.fields?.file?.url)
+            .filter(Boolean)
+            .map((url: string) => `https:${url}`)
+        : [];
+
+      return {
+        id: item.sys.id,
+        slug: item.fields.slug,
+        name: item.fields.name,
+        nameBn: item.fields.nameBn ?? "",
+        description: item.fields.description ?? "",
+        descriptionBn: item.fields.descriptionBn ?? "",
+        price: Number(item.fields.price ?? 0),
+        discountedPrice:
+          item.fields.discountedPrice != null
+            ? Number(item.fields.discountedPrice)
+            : null,
+        images: images.length > 0 ? images : dummyProducts[0].images,
+        categoryId: item.fields.category?.sys?.id ?? "",
+        categoryName: item.fields.category?.fields?.name ?? "",
+        categoryNameBn: item.fields.category?.fields?.nameBn ?? "",
+      };
+    });
   } catch (err) {
     console.error("[contentful] getProducts failed, using static data:", err);
     return dummyProducts;
@@ -181,3 +191,17 @@ export const getSiteSettings = unstable_cache(
   ["site-settings"],
   { revalidate: 3600, tags: ["siteSettings"] }
 );
+
+export async function getCategoryBySlug(
+  slug: string
+): Promise<Category | null> {
+  const all = await getCategories();
+  return all.find((category) => category.slug === slug) ?? null;
+}
+
+export async function getProductsByCategoryId(
+  categoryId: string
+): Promise<Product[]> {
+  const all = await getProducts();
+  return all.filter((product) => product.categoryId === categoryId);
+}

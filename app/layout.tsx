@@ -7,6 +7,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const { seo, siteName } = settings;
 
+  console.log("faviconUrl:", settings.seo);
+
   return {
     title: seo.title || siteName,
     description: seo.description,

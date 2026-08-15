@@ -11,7 +11,7 @@ export default async function BasketPage({
 
   return (
     <main className="section">
-      <div className="container">
+      <div className="container h-screen">
         <BasketClient
           locale={locale}
           dict={translations[locale]}
