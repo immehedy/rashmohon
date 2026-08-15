@@ -30,7 +30,8 @@ export const translations = {
     previous: "Previous",
     next: "Next",
     orderSuccess: "Your order has been placed successfully.",
-    footerTagline: "Fresh groceries and daily essentials, delivered to your doorstep.",
+    footerTagline:
+      "Fresh groceries and daily essentials, delivered to your doorstep.",
     footerQuickLinks: "Quick Links",
     footerHome: "Home",
     footerAllProducts: "All Products",
@@ -46,6 +47,9 @@ export const translations = {
     footerHoursValue: "Sat – Thu, 9:00 AM – 9:00 PM",
     footerCod: "Cash on delivery available",
     footerRights: "All rights reserved.",
+    deliveryArea: "Delivery Area",
+    insideDhaka: "In Side Dhaka",
+    outsideDhaka: "Out Side Dhaka",
   },
   bn: {
     email: "hello@rashmohon.com",
@@ -76,7 +80,8 @@ export const translations = {
     previous: "আগের",
     next: "পরের",
     orderSuccess: "আপনার অর্ডার সফলভাবে সম্পন্ন হয়েছে।",
-    footerTagline: "তাজা মুদি ও নিত্যপ্রয়োজনীয় পণ্য, আপনার দরজায় পৌঁছে দেওয়া হয়।",
+    footerTagline:
+      "তাজা মুদি ও নিত্যপ্রয়োজনীয় পণ্য, আপনার দরজায় পৌঁছে দেওয়া হয়।",
     footerQuickLinks: "দ্রুত লিংক",
     footerHome: "হোম",
     footerAllProducts: "সকল পণ্য",
@@ -92,6 +97,9 @@ export const translations = {
     footerHoursValue: "শনি – বৃহস্পতি, সকাল ৯টা – রাত ৯টা",
     footerCod: "ক্যাশ অন ডেলিভারি সুবিধা",
     footerRights: "সর্বস্বত্ব সংরক্ষিত।",
+    deliveryArea: "ডেলিভারি এলাকা",
+    insideDhaka: "ঢাকার ভিতরে",
+    outsideDhaka: "ঢাকার বাইরে ",
   },
 } as const;
 

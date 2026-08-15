@@ -77,18 +77,19 @@ button {
   }
 
   /* ---------------------------------------------------------------
-     Buttons — base shape only, no color. Pick a color variant below.
+     Buttons — base shape + default color. Override with a variant
+     below when you need the brand's primary/secondary color instead.
      --------------------------------------------------------------- */
   .btn {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-transparent px-4 text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-transparent bg-black px-4 text-xs font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  /* Solid, filled with the brand's primary color. Default call-to-action. */
+  /* Solid, filled with the brand's primary color (site settings). */
   .btn-primary {
     @apply bg-primary text-button-text hover:opacity-90;
   }
 
-  /* Solid, filled with the brand's secondary color. Secondary actions. */
+  /* Solid, filled with the brand's secondary color (site settings). */
   .btn-secondary {
     @apply bg-secondary text-button-text hover:opacity-90;
   }
@@ -109,7 +110,7 @@ button {
   }
 
   /* Legacy alias: the CMS-configured button color (buttonColor/buttonTextColor),
-     kept for anywhere .btn was used alone before variants existed. */
+       kept for anywhere .btn was used alone before variants existed. */
   .btn-cms {
     @apply bg-button text-button-text hover:opacity-90;
   }
