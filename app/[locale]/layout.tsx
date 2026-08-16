@@ -20,10 +20,10 @@ export default async function LocaleLayout({
   const settings = await getSiteSettings();
 
   return (
-    <>
+    <div className="flex min-h-dvh flex-col">
       <Header locale={locale as Locale} dict={dict} settings={settings} />
-      {children}
+      <div className="flex-1">{children}</div>
       <Footer locale={locale as Locale} dict={dict} settings={settings} />
-    </>
+    </div>
   );
 }

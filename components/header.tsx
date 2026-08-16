@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBasket, X } from "lucide-react";
+import { Search, ShoppingBagIcon, ShoppingBasket, ShoppingBasketIcon, ShoppingCart, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
+import { SearchInput } from "@/components/search-input";
 import type { Dictionary } from "@/lib/i18n";
 import type { SiteSettings } from "@/lib/theme-types";
 
@@ -87,22 +88,10 @@ export function Header({
             )}
           </Link>
 
-          {/* Desktop-only inline search bar — unchanged from original */}
-          <form
-            action={`/${locale}`}
-            className="hidden overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 transition-colors focus-within:border-primary/40 focus-within:bg-white md:flex md:max-w-md md:flex-1">
-            <input
-              name="q"
-              placeholder={dict.search}
-              className="min-w-0 flex-1 border-0 bg-transparent px-5 py-2.5 text-sm text-foreground outline-none placeholder:text-foreground/40"
-            />
-            <button
-              type="submit"
-              aria-label={dict.search}
-              className="grid w-12 place-items-center bg-primary text-button-text transition-opacity hover:opacity-90">
-              <Search size={17} />
-            </button>
-          </form>
+          {/* Desktop-only inline search bar with live suggestions */}
+          <div className="hidden md:flex md:max-w-md md:flex-1">
+            <SearchInput locale={locale} dict={dict} />
+          </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0 md:gap-3">
             {/* Search icon — mobile only, opens drawer below */}
@@ -131,7 +120,7 @@ export function Header({
               href={`/${locale}/basket`}
               className="relative grid size-11 place-items-center rounded-full border border-neutral-200 text-foreground transition-colors hover:border-primary hover:text-primary"
               aria-label={dict.cart}>
-              <ShoppingBasket size={19} />
+              <ShoppingCart size={19} />
               {cartCount > 0 && (
                 <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-primary px-1 text-[10px] text-button-text">
                   {cartCount}
@@ -150,22 +139,14 @@ export function Header({
           }`}>
           <div className="min-h-0 overflow-hidden">
             <div className="container py-4">
-              <form
-                action={`/${locale}`}
-                className="flex overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 shadow-sm transition-colors focus-within:border-primary/40 focus-within:bg-white">
-                <input
-                  ref={inputRef}
-                  name="q"
-                  placeholder={dict.search}
-                  className="min-w-0 flex-1 border-0 bg-transparent px-5 py-3 text-sm text-foreground outline-none placeholder:text-foreground/40"
-                />
-                <button
-                  type="submit"
-                  aria-label={dict.search}
-                  className="grid w-14 place-items-center bg-primary text-button-text transition-opacity hover:opacity-90">
-                  <Search size={17} />
-                </button>
-              </form>
+              <SearchInput
+                key={searchOpen ? "open" : "closed"}
+                locale={locale}
+                dict={dict}
+                variant="mobile"
+                inputRef={inputRef}
+                onSubmitted={() => setSearchOpen(false)}
+              />
             </div>
           </div>
         </div>
