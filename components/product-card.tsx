@@ -93,7 +93,9 @@ export function ProductCard({
           size="xs"
           className="min-w-0 px-1"
           onClick={() => addItem(product, 1)}>
-          <span className="truncate">{dict.addToCart}</span>
+          <span className="truncate text-[14px] lg:text-sm">
+            {dict.addToCart}
+          </span>
         </Button>
 
         <Button
@@ -101,7 +103,9 @@ export function ProductCard({
           size="xs"
           className="min-w-0 px-1"
           onClick={handleOrderNow}>
-          <span className="truncate">{dict.orderNow}</span>
+          <span className="truncate text-[14px] lg:text-sm">
+            {dict.orderNow}
+          </span>
         </Button>
       </div>
     </article>
