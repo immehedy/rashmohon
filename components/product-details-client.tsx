@@ -120,44 +120,32 @@ export function ProductDetailsClient({
     return () => observer.disconnect();
   }, []);
 
-  // Reused for both the "shop with confidence" panel and can be restyled
-  // independently of the top trust rail without duplicating markup logic.
+  // Reused for the "shop with confidence" panel — copy now comes straight
+  // from the dictionary instead of being duplicated per-locale here.
   const assurances = [
     {
       icon: ShieldCheck,
       color: "emerald" as const,
-      title: locale === "bn" ? "১০০% অরিজিনাল" : "100% genuine product",
-      body:
-        locale === "bn"
-          ? "সরাসরি অনুমোদিত উৎস থেকে সংগ্রহ করা।"
-          : "Sourced directly from authorized suppliers.",
+      title: dict.genuineProductTitle,
+      body: dict.genuineProductBody,
     },
     {
       icon: RotateCcw,
       color: "blue" as const,
-      title: locale === "bn" ? "সহজ রিটার্ন" : "Easy 7-day return",
-      body:
-        locale === "bn"
-          ? "পছন্দ না হলে সহজেই ফেরত দিন।"
-          : "Change your mind? Return it hassle-free.",
+      title: dict.easyReturnTitle,
+      body: dict.easyReturnBody,
     },
     {
       icon: Lock,
       color: "violet" as const,
-      title: locale === "bn" ? "নিরাপদ পেমেন্ট" : "Secure checkout",
-      body:
-        locale === "bn"
-          ? "আপনার তথ্য সম্পূর্ণ সুরক্ষিত।"
-          : "Your details are always protected.",
+      title: dict.secureCheckoutTitle,
+      body: dict.secureCheckoutBody,
     },
     {
       icon: Headphones,
       color: "amber" as const,
-      title: locale === "bn" ? "সার্বক্ষণিক সাপোর্ট" : "Dedicated support",
-      body:
-        locale === "bn"
-          ? "যেকোনো প্রশ্নে আমরা পাশে আছি।"
-          : "Real people, ready to help with any question.",
+      title: dict.supportTitle,
+      body: dict.supportBody,
     },
   ];
 
@@ -173,7 +161,7 @@ export function ProductDetailsClient({
       {/* Breadcrumb */}
       <div className="mb-6 flex items-center gap-1.5 text-xs text-neutral-400">
         <Link href={`/${locale}`} className="hover:text-foreground">
-          {locale === "bn" ? "হোম" : "Home"}
+          {dict.home}
         </Link>
         <ChevronRight size={12} />
         <span className="text-neutral-500">{category}</span>
@@ -212,7 +200,7 @@ export function ProductDetailsClient({
 
           {/* Thumbnails — only shown when there's more than one image */}
           {product.images.length > 1 && (
-            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
               {product.images.map((image, index) => (
                 <button
                   key={image}
@@ -271,9 +259,7 @@ export function ProductDetailsClient({
           </div>
           {savedAmount > 0 && (
             <p className="mt-1.5 text-xs font-medium text-emerald-600">
-              {locale === "bn"
-                ? `আপনি সাশ্রয় করছেন ৳${savedAmount.toLocaleString()}`
-                : `You save ৳${savedAmount.toLocaleString()} on this order`}
+              {dict.youSave.replace("{amount}", savedAmount.toLocaleString())}
             </p>
           )}
 
@@ -307,7 +293,7 @@ export function ProductDetailsClient({
 
               {quantity > 1 && (
                 <span className="text-xs text-neutral-500">
-                  {locale === "bn" ? "মোট" : "Total"}{" "}
+                  {dict.total}{" "}
                   <span className="font-bold tabular-nums text-foreground">
                     ৳{(displayPrice * quantity).toLocaleString()}
                   </span>
@@ -353,14 +339,12 @@ export function ProductDetailsClient({
             <div>
               <p className="text-xs font-bold text-foreground">{dict.cod}</p>
               <p className="mt-1 text-xs leading-5 text-neutral-500">
-                {locale === "bn"
-                  ? "অর্ডার করার পর আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবেন।"
-                  : "Our representative will contact you after your order is placed."}
+                {dict.codNote}
               </p>
             </div>
           </div>
 
-          {/* NEW — "Shop with confidence": additional content beneath the
+          {/* "Shop with confidence" — additional content beneath the
               COD note, each point color-coded so the panel doesn't read
               as one long gray block. */}
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -420,12 +404,10 @@ export function ProductDetailsClient({
                 <BadgeCheck size={17} className="text-emerald-600" />
               </span>
               <p className="mt-3 text-xs font-bold text-foreground">
-                {locale === "bn" ? "গুণমান যাচাইকৃত" : "Quality checked"}
+                {dict.qualityCheckedTitle}
               </p>
               <p className="mt-1.5 text-[11px] leading-5 text-neutral-500">
-                {locale === "bn"
-                  ? "প্রতিটি পণ্য বিক্রির আগে যাচাই করা হয়, যাতে আপনি নিশ্চিন্তে অর্ডার করতে পারেন।"
-                  : "Every item is checked before it ships, so you can order with confidence."}
+                {dict.qualityCheckedBody}
               </p>
             </div>
           </div>

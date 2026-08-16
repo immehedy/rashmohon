@@ -58,7 +58,6 @@
     --color-red-50: #fef2f2;
     --color-red-500: #fb2c36;
     --color-red-600: #e40014;
-    --color-red-700: #bf000f;
     --color-amber-50: #fffbeb;
     --color-amber-600: #dd7400;
     --color-emerald-50: #ecfdf5;
@@ -143,7 +142,6 @@
       --color-red-50: lab(96.5005% 4.18508 1.52328);
       --color-red-500: lab(55.4814% 75.0732 48.8528);
       --color-red-600: lab(48.4493% 77.4328 61.5452);
-      --color-red-700: lab(40.4273% 67.2623 53.7441);
       --color-amber-50: lab(98.6252% -.635922 8.42309);
       --color-amber-600: lab(60.3514% 40.5624 87.1228);
       --color-emerald-50: lab(97.8462% -6.94966 1.85487);
@@ -1040,7 +1038,7 @@
     resize: none;
   }
 
-  .\[scrollbar-width\:thin\] {
+  .\[scrollbar-width\:thin\], .scrollbar-thin {
     scrollbar-width: thin;
   }
 
@@ -1489,10 +1487,6 @@
     padding: calc(var(--spacing) * 2);
   }
 
-  .p-3 {
-    padding: calc(var(--spacing) * 3);
-  }
-
   .p-3\.5 {
     padding: calc(var(--spacing) * 3.5);
   }
@@ -1654,16 +1648,6 @@
     line-height: var(--tw-leading, var(--text-2xl--line-height));
   }
 
-  .text-3xl {
-    font-size: var(--text-3xl);
-    line-height: var(--tw-leading, var(--text-3xl--line-height));
-  }
-
-  .text-4xl {
-    font-size: var(--text-4xl);
-    line-height: var(--tw-leading, var(--text-4xl--line-height));
-  }
-
   .text-5xl {
     font-size: var(--text-5xl);
     line-height: var(--tw-leading, var(--text-5xl--line-height));
@@ -1788,11 +1772,6 @@
   .tracking-\[\.16em\] {
     --tw-tracking: .16em;
     letter-spacing: .16em;
-  }
-
-  .tracking-\[0\.2em\] {
-    --tw-tracking: .2em;
-    letter-spacing: .2em;
   }
 
   .tracking-\[0\.15em\] {
@@ -2115,10 +2094,6 @@
       background-color: var(--color-neutral-800);
     }
 
-    .hover\:bg-red-700:hover {
-      background-color: var(--color-red-700);
-    }
-
     .hover\:text-foreground:hover {
       color: var(--color-foreground);
     }
@@ -2180,16 +2155,8 @@
   }
 
   @media (min-width: 40rem) {
-    .sm\:flex {
-      display: flex;
-    }
-
     .sm\:w-\[150px\] {
       width: 150px;
-    }
-
-    .sm\:grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .sm\:grid-cols-3 {
@@ -2339,10 +2306,6 @@
 
     .lg\:pt-2 {
       padding-top: calc(var(--spacing) * 2);
-    }
-
-    .lg\:pt-4 {
-      padding-top: calc(var(--spacing) * 4);
     }
 
     .lg\:pb-0 {
