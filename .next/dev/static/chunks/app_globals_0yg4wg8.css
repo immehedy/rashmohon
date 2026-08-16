@@ -645,6 +645,10 @@
     top: calc(var(--spacing) * 5);
   }
 
+  .top-full {
+    top: 100%;
+  }
+
   .-right-1 {
     right: calc(var(--spacing) * -1);
   }
@@ -665,6 +669,10 @@
     bottom: calc(var(--spacing) * 6);
   }
 
+  .left-0 {
+    left: 0;
+  }
+
   .left-5 {
     left: calc(var(--spacing) * 5);
   }
@@ -675,6 +683,10 @@
 
   .z-40 {
     z-index: 40;
+  }
+
+  .z-50 {
+    z-index: 50;
   }
 
   .col-span-1 {
@@ -857,6 +869,11 @@
     height: calc(var(--spacing) * 9);
   }
 
+  .size-10 {
+    width: calc(var(--spacing) * 10);
+    height: calc(var(--spacing) * 10);
+  }
+
   .size-11 {
     width: calc(var(--spacing) * 11);
     height: calc(var(--spacing) * 11);
@@ -916,6 +933,10 @@
     height: 100vh;
   }
 
+  .max-h-\[60vh\] {
+    max-height: 60vh;
+  }
+
   .max-h-\[520px\] {
     max-height: 520px;
   }
@@ -938,6 +959,10 @@
 
   .min-h-\[500px\] {
     min-height: 500px;
+  }
+
+  .min-h-dvh {
+    min-height: 100dvh;
   }
 
   .w-1 {
@@ -1817,6 +1842,26 @@
     color: var(--color-foreground);
   }
 
+  .text-foreground\/50 {
+    color: var(--color-foreground);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-foreground\/50 {
+      color: color-mix(in oklab, var(--color-foreground) 50%, transparent);
+    }
+  }
+
+  .text-foreground\/60 {
+    color: var(--color-foreground);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-foreground\/60 {
+      color: color-mix(in oklab, var(--color-foreground) 60%, transparent);
+    }
+  }
+
   .text-neutral-300 {
     color: var(--color-neutral-300);
   }
@@ -1905,6 +1950,11 @@
 
   .shadow-\[0_1px_2px_rgba\(0\,0\,0\,0\.04\)\,0_20px_40px_-24px_rgba\(0\,0\,0\,0\.15\)\] {
     --tw-shadow: 0 1px 2px var(--tw-shadow-color, #0000000a), 0 20px 40px -24px var(--tw-shadow-color, #00000026);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  .shadow-lg {
+    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, #0000001a), 0 4px 6px -4px var(--tw-shadow-color, #0000001a);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
@@ -2316,6 +2366,10 @@
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));
     }
+  }
+
+  .\[\&\:\:-webkit-search-cancel-button\]\:hidden::-webkit-search-cancel-button {
+    display: none;
   }
 
   .\[\&\>p\]\:inline > p {
