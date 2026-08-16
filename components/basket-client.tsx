@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Banknote,
   Building2,
   CheckCircle2,
+  ChevronUp,
   Loader2,
   MapPin,
   MapPinned,
@@ -18,9 +19,10 @@ import {
   Trash2,
   Truck,
   User,
+  X,
 } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n";
-import type { Locale } from "@/lib/types";
+import type { CartItem, Locale } from "@/lib/types";
 import { useCartStore } from "@/store/cart-store";
 import { Button } from "./ui/button";
 
@@ -47,6 +49,22 @@ export function BasketClient({
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deliveryArea, setDeliveryArea] = useState<DeliveryArea>("dhaka");
+  const [summaryOpen, setSummaryOpen] = useState(false);
+
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    if (!summaryOpen) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSummaryOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [summaryOpen]);
 
   const shipping = items.length ? DELIVERY_RATES[deliveryArea] : 0;
   const total = subtotal + shipping;
@@ -97,9 +115,13 @@ export function BasketClient({
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-      {/* Basket */}
-      <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] sm:p-6">
+    <div className="grid gap-5 pb-24 lg:grid-cols-[1.15fr_.85fr] lg:items-start lg:pb-0">
+      {/* Basket — desktop only when it has items; on mobile a sticky bottom
+          bar replaces it so the checkout form stays visible */}
+      <div
+        className={`rounded-3xl border border-neutral-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] sm:p-6 ${
+          items.length > 0 ? "hidden lg:block" : ""
+        }`}>
         <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
           <div className="flex items-center gap-2.5">
             <span className="grid size-8 place-items-center rounded-full bg-primary/10">
@@ -131,73 +153,15 @@ export function BasketClient({
           </div>
         ) : (
           <div className="max-h-[520px] divide-y divide-neutral-100 overflow-y-auto pr-1">
-            {items.map((item) => {
-              const name = locale === "bn" ? item.nameBn : item.name;
-              const lineTotal = item.price * item.quantity;
-
-              return (
-                <div
-                  key={item.id}
-                  className="group grid grid-cols-[52px_1fr_auto] items-start gap-3 py-3.5">
-                  <div className="relative aspect-square overflow-hidden rounded-lg bg-neutral-50 ring-1 ring-neutral-100">
-                    <Image
-                      src={item.images[0]}
-                      alt={name}
-                      fill
-                      sizes="52px"
-                      className="object-cover"
-                    />
-                  </div>
-
-                  <div className="min-w-0">
-                    <h3 className="truncate text-sm font-semibold text-foreground">
-                      {name}
-                    </h3>
-                    <p className="mt-0.5 text-xs tabular-nums text-neutral-400">
-                      ৳{item.price.toLocaleString()}
-                    </p>
-
-                    <div className="mt-2 flex items-center gap-2.5">
-                      <div className="flex w-fit items-center rounded-full border border-neutral-200">
-                        <button
-                          type="button"
-                          aria-label="Decrease quantity"
-                          className="grid size-6 place-items-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-foreground"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
-                          }>
-                          <Minus size={11} />
-                        </button>
-                        <span className="grid size-6 place-items-center text-xs font-semibold tabular-nums">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          aria-label="Increase quantity"
-                          className="grid size-6 place-items-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-foreground"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
-                          }>
-                          <Plus size={11} />
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => removeItem(item.id)}
-                        aria-label="Remove"
-                        className="text-neutral-300 opacity-0 transition-all hover:text-red-500 group-hover:opacity-100">
-                        <Trash2 size={14} strokeWidth={1.75} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="pt-0.5 text-sm font-semibold tabular-nums text-foreground">
-                    ৳{lineTotal.toLocaleString()}
-                  </div>
-                </div>
-              );
-            })}
+            {items.map((item) => (
+              <BasketItemRow
+                key={item.id}
+                item={item}
+                locale={locale}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -395,6 +359,172 @@ export function BasketClient({
           )}
         </Button>
       </form>
+
+      {/* Sticky basket bar — mobile only, opens the items popup */}
+      {items.length > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setSummaryOpen(true)}
+            className="flex w-full items-center justify-between gap-3 border-t border-neutral-200 bg-white/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
+            <span className="flex items-center gap-2.5">
+              <span className="relative grid size-9 place-items-center rounded-full bg-primary/10">
+                <ShoppingBag
+                  size={16}
+                  className="text-primary"
+                  strokeWidth={1.75}
+                />
+                <span className="absolute -right-1 -top-1 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-button-text">
+                  {totalQuantity}
+                </span>
+              </span>
+              <span className="text-sm font-semibold text-foreground">
+                {dict.cart} · {items.length}{" "}
+                {items.length === 1 ? "item" : "items"}
+              </span>
+            </span>
+            <span className="flex items-center gap-1 text-sm font-extrabold tabular-nums text-foreground">
+              ৳{total.toLocaleString()}
+              <ChevronUp size={16} className="text-neutral-400" />
+            </span>
+          </button>
+        </div>
+      )}
+
+      {/* Basket items popup — mobile only */}
+      {summaryOpen && items.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={dict.cart}>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setSummaryOpen(false)}
+            className="absolute inset-0 bg-black/40"
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-8 place-items-center rounded-full bg-primary/10">
+                  <ShoppingBag
+                    size={15}
+                    className="text-primary"
+                    strokeWidth={1.75}
+                  />
+                </span>
+                <h2 className="font-serif text-lg font-medium tracking-tight text-foreground">
+                  {dict.cart}
+                </h2>
+                <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+                  {items.length} {items.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSummaryOpen(false)}
+                aria-label="Close"
+                className="grid size-9 place-items-center rounded-full border border-neutral-200 text-neutral-500 transition-colors hover:bg-neutral-100">
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="max-h-[60vh] divide-y divide-neutral-100 overflow-y-auto px-5">
+              {items.map((item) => (
+                <BasketItemRow
+                  key={item.id}
+                  item={item}
+                  locale={locale}
+                  updateQuantity={updateQuantity}
+                  removeItem={removeItem}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-baseline justify-between border-t border-neutral-100 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+              <span className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                {dict.subtotal}
+              </span>
+              <span className="font-serif text-lg font-medium tabular-nums text-foreground">
+                ৳{subtotal.toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BasketItemRow({
+  item,
+  locale,
+  updateQuantity,
+  removeItem,
+}: {
+  item: CartItem;
+  locale: Locale;
+  updateQuantity: (id: string, quantity: number) => void;
+  removeItem: (id: string) => void;
+}) {
+  const name = locale === "bn" ? item.nameBn : item.name;
+  const lineTotal = item.price * item.quantity;
+
+  return (
+    <div className="group grid grid-cols-[52px_1fr_auto] items-start gap-3 py-3.5">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-neutral-50 ring-1 ring-neutral-100">
+        <Image
+          src={item.images[0]}
+          alt={name}
+          fill
+          sizes="52px"
+          className="object-cover"
+        />
+      </div>
+
+      <div className="min-w-0">
+        <h3 className="truncate text-sm font-semibold text-foreground">
+          {name}
+        </h3>
+        <p className="mt-0.5 text-xs tabular-nums text-neutral-400">
+          ৳{item.price.toLocaleString()}
+        </p>
+
+        <div className="mt-2 flex items-center gap-2.5">
+          <div className="flex w-fit items-center rounded-full border border-neutral-200">
+            <button
+              type="button"
+              aria-label="Decrease quantity"
+              className="grid size-6 place-items-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-foreground"
+              onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+              <Minus size={11} />
+            </button>
+            <span className="grid size-6 place-items-center text-xs font-semibold tabular-nums">
+              {item.quantity}
+            </span>
+            <button
+              type="button"
+              aria-label="Increase quantity"
+              className="grid size-6 place-items-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-foreground"
+              onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+              <Plus size={11} />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => removeItem(item.id)}
+            aria-label="Remove"
+            className="text-neutral-300 opacity-0 transition-all hover:text-red-500 group-hover:opacity-100">
+            <Trash2 size={14} strokeWidth={1.75} />
+          </button>
+        </div>
+      </div>
+
+      <div className="pt-0.5 text-sm font-semibold tabular-nums text-foreground">
+        ৳{lineTotal.toLocaleString()}
+      </div>
     </div>
   );
 }
