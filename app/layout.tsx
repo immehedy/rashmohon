@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { getSiteSettings } from "@/lib/contentful";
 import { themeToCssVariables, googleFontHref } from "@/lib/theme-utils";
+import { FacebookPixel } from "@/components/facebook-pixel";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
@@ -55,7 +56,12 @@ export default async function RootLayout({
         />
         <link rel="stylesheet" href={fontHref} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {settings.analytics.facebookPixelId && (
+          <FacebookPixel pixelId={settings.analytics.facebookPixelId} />
+        )}
+      </body>
     </html>
   );
 }

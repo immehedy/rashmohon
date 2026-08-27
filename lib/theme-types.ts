@@ -24,6 +24,11 @@ export interface SeoMeta {
   canonicalUrl?: string;
 }
 
+export interface SiteAnalytics {
+  /** Meta (Facebook) Pixel ID, e.g. "123456789012345" */
+  facebookPixelId?: string;
+}
+
 export interface SiteSettings {
   siteName: string;
   logoUrl: string;
@@ -35,4 +40,5 @@ export interface SiteSettings {
   footerNavLinks: NavLink[];
   footerText?: string;
   socialLinks?: NavLink[];
+  analytics: SiteAnalytics;
 }
