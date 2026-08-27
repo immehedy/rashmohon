@@ -30,4 +30,5 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   footerNavLinks: [],
   footerText: `© ${new Date().getFullYear()} Rashmohon. All rights reserved.`,
   socialLinks: [],
+  analytics: {},
 };

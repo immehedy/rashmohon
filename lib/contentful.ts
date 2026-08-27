@@ -157,6 +157,13 @@ function mapSiteSettings(item: any): SiteSettings {
     footerNavLinks: mapNavLinks(f.footerNavLinks, defaults.footerNavLinks),
     footerText: f.footerText ?? defaults.footerText,
     socialLinks: mapNavLinks(f.socialLinks, defaults.socialLinks ?? []),
+    analytics: {
+      facebookPixelId:
+        typeof f.facebookPixelId === "string" &&
+        f.facebookPixelId.trim().length > 0
+          ? f.facebookPixelId.trim()
+          : defaults.analytics.facebookPixelId,
+    },
   };
 }
 
